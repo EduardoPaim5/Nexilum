@@ -26,16 +26,16 @@ Nexilum is an application inspired by tools like Jira and Trello, with a twist: 
 ## Screenshots
 
 ### Login Page
-![Login](/docs/screenshots/login.png)
+![Login](docs/screenshots/login.png)
 
 ### Dashboard
-![Dashboard](/docs/screenshots/dashboard.png)
+![Dashboard](docs/screenshots/dashboard.png)
 
 ### Tasks (Kanban Board)
-![Tasks](/docs/screenshots/tasks.png)
+![Tasks](docs/screenshots/tasks.png)
 
 ### Gamification
-![Gamification](/docs/screenshots/gamification.png)
+![Gamification](docs/screenshots/gamification.png)
 
 ## Tech Stack
 
@@ -76,8 +76,8 @@ Nexilum is an application inspired by tools like Jira and Trello, with a twist: 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/EduardoPaim5/taskflow.git
-cd taskflow
+git clone https://github.com/EduardoPaim5/Nexilum.git
+cd Nexilum
 ```
 
 ### 2. Start the database
@@ -301,4 +301,4 @@ docker-compose up -d
 
 ## License
 
-This project is under the MIT license. See the [LICENSE](LICENSE) file for more details.
+The project README previously referred to an MIT LICENSE file that is not present in this checkout. License terms should be confirmed before reuse.
