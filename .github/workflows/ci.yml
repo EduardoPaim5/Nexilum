@@ -76,6 +76,22 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: taskflow_test
+          POSTGRES_USER: taskflow
+          POSTGRES_PASSWORD: taskflow123
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     
     steps:
     - name: Checkout code
@@ -89,6 +105,26 @@ jobs:
       with:
         context: .
         push: false
+        load: true
         tags: taskflow:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+    - name: Smoke test built image
+      run: |
+        docker run -d --name nexilum-smoke --network host \
+          -e DB_URL=jdbc:postgresql://localhost:5432/taskflow_test \
+          -e DB_USER=taskflow -e DB_PASSWORD=taskflow123 \
+          -e SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop taskflow:latest
+        for attempt in $(seq 1 30); do
+          if curl --fail --silent http://localhost:8080/api/actuator/health; then
+            exit 0
+          fi
+          sleep 2
+        done
+        docker logs nexilum-smoke
+        exit 1
+
+    - name: Clean up smoke container
+      if: always()
+      run: docker rm -f nexilum-smoke || true
