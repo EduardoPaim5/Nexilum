@@ -16,29 +16,29 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Base class for integration tests using Testcontainers with PostgreSQL.
- * Uses JDBC URL-based container management for simplicity.
+ * One container lives for the test JVM, matching Spring's cached application contexts.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers(disabledWithoutDocker = true)
 public abstract class BaseIntegrationTest {
 
     private static final AtomicInteger USER_COUNTER = new AtomicInteger(0);
 
-    @Container
     @SuppressWarnings("resource")
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine")
             .withDatabaseName("taskflow_test")
             .withUsername("taskflow")
             .withPassword("taskflow123");
+
+    static {
+        POSTGRES.start();
+    }
 
     @DynamicPropertySource
     static void registerDataSourceProperties(DynamicPropertyRegistry registry) {
